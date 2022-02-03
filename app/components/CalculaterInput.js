@@ -1,29 +1,33 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { getCurrencyByCode } from '../store/actions/currencyActions'
 
-const Calculater = () => {
+const Calculater = props => {
+   const dispatch = useDispatch()
+
    const [amount, setAmount] = useState(null)
-   //  const [isListShown, setIsListShown] = useState(false)
-   const [selectedCountry, setSelectedCountry] = useState()
+   const [selectedCountry, setSelectedCountry] = useState('ils')
+   const [coin, setCoin] = useState('₪')
 
    useEffect(() => {
-      setAmount('100')
+      if (!amount) setAmount('100')
+      if (selectedCountry === 'ils') props.changeCurrency(selectedCountry)
       return () => {}
-   }, [])
+   }, [coin])
 
    const onChangemountInput = ev => {
       setAmount(ev)
+      props.changeAmount(+ev)
    }
 
-   const handleCountryChange = (itemValue, itemIndex) => {
+   const handleCountryChange = async (itemValue, itemIndex) => {
       setSelectedCountry(itemValue)
+      props.changeCurrency(itemValue)
+      let country = await dispatch(getCurrencyByCode(itemValue))
+      setCoin(await country.coin)
    }
-
-   //  const handleListPress = () => {
-   //     console.log('list pressed')
-   //     setIsListShown(prevIsListShown => !prevIsListShown)
-   //  }
 
    return (
       <View style={[styles.calcRow, styles.sellRow]}>
@@ -33,24 +37,14 @@ const Calculater = () => {
          <View style={styles.calcRowInput}>
             <View style={styles.amountInputContainer}>
                <TextInput value={amount} onChangeText={onChangemountInput} nChange style={styles.amountInput} keyboardType="numeric"></TextInput>
-               <Text style={styles.coinSymbol}>$</Text>
+               <Text style={styles.coinSymbol}>{coin}</Text>
             </View>
             <View style={styles.currencyInput}>
-               {/* <TouchableOpacity onPress={handleListPress}>
-                  <View style={styles.currentCountry}>
-                     <Image resizeMode="cover" style={styles.countryImg} source={require('../assets/countries/isr.png')} />
-                     <Text style={styles.amountInput}>ILS</Text>
-                  </View>
-               </TouchableOpacity> */}
-               {/* {isListShown && (
-                  <TouchableOpacity> */}
                <Picker mode="dropdown" selectedValue={selectedCountry} style={styles.listCountry} onValueChange={(itemValue, itemIndex) => handleCountryChange(itemValue, itemIndex)}>
                   <Picker.Item label="🇮🇱 ILS" value="ils" />
                   <Picker.Item label="🇬🇧 GBP" value="gbp" />
                   <Picker.Item label="🇪🇺 EUR" value="eur" />
                </Picker>
-               {/* </TouchableOpacity>
-               )} */}
             </View>
          </View>
       </View>
@@ -91,7 +85,6 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start'
    },
    amountInput: {
-      // width: 100,
       flex: 0,
       height: 24,
       lineHeight: 24,
@@ -119,31 +112,10 @@ const styles = StyleSheet.create({
       width: 100,
       paddingBottom: 12
    },
-   currentCountry: {
-      height: 24,
-      borderWidth: 1,
-      fontSize: 24,
-      color: '#606060',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderWidth: 1,
-      borderColor: 'transparent'
-   },
-   countryImg: {
-      width: 30,
-      height: 50,
-      overflow: 'hidden',
-      borderWidth: 2,
-      borderRadius: 75,
-      marginLeft: 10
-   },
    listCountry: {
       width: 120,
       position: 'absolute',
       left: 0,
       bottom: 0
-   },
-   listCountryPicker: {}
+   }
 })

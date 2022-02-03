@@ -1,12 +1,6 @@
-// import Axios from 'axios'
 import axios from 'axios'
 import { Platform } from 'react-native'
-// const BASE_URL = process.env.NODE_ENV === 'production' ? '/api/' : '//localhost:3030/api/'
 const BASE_URL = Platform.OS === 'ios' ? 'http://localhost:5000/api/' : 'http://10.0.2.2:5000/api/'
-
-// var axios = Axios.create({
-//    withCredentials: true
-// })
 
 export const httpService = {
    get(endpoint, data) {

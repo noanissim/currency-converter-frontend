@@ -9,5 +9,4 @@ const rootReducer = combineReducers({
 })
 
 export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
-// console.log('store:', store)
 window.myStore = store

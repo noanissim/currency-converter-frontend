@@ -1,148 +1,20 @@
 import { httpService } from './http-service.js'
-import axios from 'axios'
 export const currencyService = {
    getCurrencies,
    getCurrencyById,
    deleteCurrency,
    saveCurrency,
-   getEmptyCurrency
+   getEmptyCurrency,
+   getCurrencyByCode,
+   getConvertedValues,
+   getDestFlags
 }
 
-const API_KEY = 'edcfa3216ba52990434c'
-let gDefaultCurrencies = [
-   {
-      _id: _makeId(),
-      name: 'Europe',
-      code: 'EUR',
-      coin: '€',
-      currencies: []
-   },
-   {
-      _id: _makeId(),
-      name: 'Israel',
-      code: 'ISR',
-      coin: '₪',
-      currencies: []
-   },
-   {
-      _id: _makeId(),
-      name: 'United Kingdom',
-      code: 'GBP',
-      coin: '£',
-      currencies: []
-   }
-]
-
-const emptyToCountry = {
-   _id: _makeId(),
-   name: '',
-   code: '',
-   coin: '',
-   value: null
-}
-
-let destinationCountries = [
-   {
-      _id: _makeId(),
-      name: 'Philippines',
-      code: 'PHP',
-      coin: '₱',
-      flag: '🇵🇭'
-   },
-   {
-      _id: _makeId(),
-      name: 'Nepal',
-      code: 'NPR',
-      coin: '₨',
-      flag: '🇳🇵'
-   },
-   {
-      _id: _makeId(),
-      name: 'Sri Lankas',
-      code: 'LKR',
-      coin: '₨',
-      flag: '🇱🇰'
-   },
-   {
-      _id: _makeId(),
-      name: 'India',
-      code: 'INR',
-      coin: '₹',
-      flag: '🇮🇳'
-   },
-   {
-      _id: _makeId(),
-      name: 'China',
-      code: 'CNY',
-      coin: '¥',
-      flag: '🇨🇳'
-   },
-   {
-      _id: _makeId(),
-      name: 'Thiland',
-      code: 'THB',
-      coin: '฿',
-      flag: '🇹🇭'
-   },
-   {
-      _id: _makeId(),
-      name: 'Ghana',
-      code: 'GHS',
-      coin: 'GH₵',
-      flag: '🇬🇭'
-   },
-   {
-      _id: _makeId(),
-      name: 'Kenya',
-      code: 'KES',
-      coin: 'K',
-      flag: '🇰🇪'
-   },
-   {
-      _id: _makeId(),
-      name: 'Nigeria',
-      code: 'USD',
-      coin: '$',
-      flag: '🇳🇬'
-   },
-   {
-      _id: _makeId(),
-      name: 'South Africa',
-      code: 'ZAR',
-      coin: 'R',
-      flag: '🇿🇦'
-   }
-]
-
-var gCurrencies = _loadCurrencies()
-
-async function getCurrency(filterBy = null) {
-   let url = `https://free.currconv.com/api/v7/convert?q=${filterBy.from}_${filterBy.to}&apiKey=${API_KEY}`
-   try {
-      const res = await axios.get(url)
-      console.log('res.data.results :>>', res.data.results)
-      return res.data
-   } catch (err) {
-      console.log(err)
-   }
-}
+var gCurrencies
 
 async function getCurrencies(filterBy = '') {
-   gDefaultCurrencies.forEach(country => {
-      let from = country.code
-      let myFilter = { from: '', to: '', value: null }
-      destinationCountries.forEach(async destination => {
-         myFilter.from = from
-         myFilter.to = destination.code
-
-         let res = await getCurrency(myFilter)
-         // console.log('res :>>', res)
-         // if (res.results && res.results.value) myFilter.value = res.results?.val
-      })
-      country.currencies.push(myFilter)
-   })
-   // return gDefaultCurrencies
-   return await httpService.get(`country`)
+   gCurrencies = await httpService.get(`country`)
+   return gCurrencies
 }
 
 async function getCurrencyById(id) {
@@ -165,6 +37,30 @@ async function saveCurrency(country) {
    return country._id ? await _updateCurrency(country) : await _addCurrency(country)
 }
 
+async function getConvertedValues(country, destination, inputValue) {
+   try {
+      return destination.value * parseInt(inputValue)
+   } catch (err) {
+      console.log(err)
+   }
+}
+
+async function getCurrencyByCode(code) {
+   let country = gCurrencies.find(country => country.code.toLowerCase() === code)
+   if (country) {
+      let ans = await getCurrencyById(country._id)
+      return ans
+   }
+}
+
+async function getDestFlags() {
+   let currencies = await getCurrencies()
+   let flags = currencies.map(dest => {
+      return { flag: dest.flag, to: dest.to }
+   })
+   return flags
+}
+
 function getEmptyCurrency() {
    return {
       name: '',
@@ -172,32 +68,4 @@ function getEmptyCurrency() {
       coin: '',
       currencies: []
    }
-}
-function _loadCurrencies() {
-   let currencies = gDefaultCurrencies
-   return currencies
-}
-
-// function filter(filterBy) {
-//    const name = filterBy.name.toLocaleLowerCase()
-//    const phone = filterBy.phone
-//    const email = filterBy.email.toLocaleLowerCase()
-//    return currencies.filter(currency => {
-//       return currency.name.toLocaleLowerCase().includes(name) && currency.phone.includes(phone) && currency.email.toLocaleLowerCase().includes(email)
-//    })
-// }
-function filter(term) {
-   term = term.toLocaleLowerCase()
-   return gCurrencies.filter(currency => {
-      return currency.name.toLocaleLowerCase().includes(term) || currency.phone.toLocaleLowerCase().includes(term) || currency.email.toLocaleLowerCase().includes(term)
-   })
-}
-
-function _makeId(length = 10) {
-   var txt = ''
-   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-   for (var i = 0; i < length; i++) {
-      txt += possible.charAt(Math.floor(Math.random() * possible.length))
-   }
-   return txt
 }

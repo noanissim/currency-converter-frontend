@@ -2,11 +2,25 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, TouchableWi
 import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 
-const CalculaterOutput = () => {
-   const [selectedCountry, setSelectedCountry] = useState()
+const CalculaterOutput = props => {
+   const [selectedCountry, setSelectedCountry] = useState(null)
+   const [coin, setCoin] = useState(null)
 
-   const handleCountryChange = (itemValue, itemIndex) => {
+   useEffect(() => {
+      if (!selectedCountry) props.changeDestination('php')
+      if (!coin) setCoin('₱')
+
+      if (selectedCountry && props.currDestination) {
+         props.changeDestination(selectedCountry)
+         setCoin(props.currDestination.coin)
+      }
+      return () => {}
+   }, [coin, props.currDestination, props.convertedOutput])
+
+   const handleCountryChange = async (itemValue, itemIndex) => {
       setSelectedCountry(itemValue)
+      props.changeDestination(itemValue)
+      setCoin(props.currDestination.coin)
    }
 
    return (
@@ -14,12 +28,12 @@ const CalculaterOutput = () => {
          <View style={styles.calcRowTitle}>
             <Text style={styles.rowTitle}>They will receive</Text>
          </View>
-         <View style={styles.calcRowInput}>
-            <View style={styles.amountInputContainer}>
-               <Text style={styles.amountInput}>120</Text>
-               <Text style={styles.coinSymbol}>$</Text>
+         <View style={styles.calcRowOutput}>
+            <View style={styles.amountOutputContainer}>
+               <Text style={styles.amountOutput}>{props.convertedOutput}</Text>
+               <Text style={styles.coinSymbol}>{coin}</Text>
             </View>
-            <View style={styles.currencyInput}>
+            <View style={styles.currencyOutput}>
                <Picker mode="dropdown" selectedValue={selectedCountry} style={styles.listCountry} onValueChange={(itemValue, itemIndex) => handleCountryChange(itemValue, itemIndex)}>
                   <Picker.Item label="🇵🇭 PHP" value="php" />
                   <Picker.Item label="🇳🇵 NPR" value="npr" />
@@ -51,14 +65,14 @@ const styles = StyleSheet.create({
       fontWeight: '400',
       color: '#adacab'
    },
-   calcRowInput: {
+   calcRowOutput: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'stretch',
       marginBottom: 10
    },
-   amountInputContainer: {
+   amountOutputContainer: {
       borderBottomColor: '#b9babb',
       borderRightWidth: 0,
       borderLeftWidth: 0,
@@ -71,8 +85,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'flex-start'
    },
-   amountInput: {
-      // width: 100,
+   amountOutput: {
       flex: 0,
       height: 24,
       lineHeight: 24,
@@ -90,7 +103,7 @@ const styles = StyleSheet.create({
       color: '#606060',
       zIndex: 1
    },
-   currencyInput: {
+   currencyOutput: {
       borderBottomColor: '#b9babb',
       borderRightWidth: 0,
       borderLeftWidth: 0,

@@ -5,7 +5,6 @@ export function loadCurrencies() {
       const { filterBy } = getState().currencyModule
       try {
          const currencies = await currencyService.getCurrencies(filterBy)
-         console.log('currencies :>>', currencies)
          dispatch({ type: 'SET_CURRENCIES', currencies })
       } catch (err) {
          console.log(err)
@@ -33,5 +32,21 @@ export function setFilterBy(filterBy) {
 export function getCurrencyById(currencyId) {
    return async () => {
       return await currencyService.getCurrencyById(currencyId)
+   }
+}
+
+export function getCurrencyByCode(currencyCode) {
+   return async () => {
+      return await currencyService.getCurrencyByCode(currencyCode)
+   }
+}
+
+export async function getConvertedValues(country, destination, inputValue) {
+   return await currencyService.getConvertedValues(country, destination, inputValue)
+}
+
+export function getDestFlags() {
+   return async () => {
+      return currencyService.getDestFlags()
    }
 }

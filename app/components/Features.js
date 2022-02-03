@@ -1,28 +1,77 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, Dimensions, View, SafeAreaView, AppRegistry, StatusBar, FlatList, Image } from 'react-native'
+import React, { useRef, useState } from 'react'
 import colors from '../config/colors'
 
+import * as Svg from 'react-native-svg'
+const { Circle, Rect } = Svg
+import { SvgCssUri } from 'react-native-svg'
+
+const { width } = Dimensions.get('window')
+
+const SPACING = 5
+const ITEM_LENGTH = width * 0.5 // Item is a square. Therefore, its height and width are of the same length.
+const BORDER_RADIUS = 10
+
 const Features = () => {
+   const flatListRef = useRef()
+   const [images, setimages] = useState([
+      { id: 0, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/BetterRate-1.svg` },
+      { id: 1, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/Fatest-mob-1.svg` },
+      { id: 2, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/1000-mob-1.svg` },
+      { id: 3, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/Language-mob-1.svg` },
+      { id: 4, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/TrustedSecured-1-1.svg` }
+   ])
+
    return (
-      <View style={styles.featuresMain}>
-         <Text>featuresss</Text>
-      </View>
+      <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
+         <StatusBar barStyle="light-content" />
+         <View style={{ flex: 1 }}>
+            <FlatList
+               data={images}
+               renderItem={({ item, index }) => {
+                  return (
+                     <View style={{ width: ITEM_LENGTH }}>
+                        <View style={styles.itemContent}>
+                           <SvgCssUri uri={item.src} style={styles.itemImage} />
+                        </View>
+                     </View>
+                  )
+               }}
+               ref={flatListRef}
+               horizontal
+               showsHorizontalScrollIndicator={false}
+               keyExtractor={item => item.id}
+            />
+         </View>
+      </SafeAreaView>
    )
 }
 
 export default Features
 
 const styles = StyleSheet.create({
-   featuresMain: {
-      marginTop: 20,
-      width: 320,
-      margin: 'auto',
-      backgroundColor: '#f5f3f9',
-      padding: 25,
-      borderRadius: 10,
+   absoluteFill: {},
+   container: {},
+   itemContent: {
+      marginHorizontal: SPACING * 3,
       alignItems: 'center',
-      alignContent: 'center',
-      justifyContent: 'flex-start',
-      height: 280
+      backgroundColor: '#f5f3f9',
+      backgroundColor: 'white',
+      padding: 15,
+      borderRadius: 10
+   },
+   itemText: {
+      fontSize: 24,
+      position: 'absolute',
+      bottom: SPACING * 2,
+      right: SPACING * 2,
+      color: 'white',
+      fontWeight: '600'
+   },
+   itemImage: {
+      width: '100%',
+      height: ITEM_LENGTH,
+      borderRadius: BORDER_RADIUS,
+      resizeMode: 'cover'
    }
 })

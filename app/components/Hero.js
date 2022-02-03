@@ -1,4 +1,4 @@
-import { Button, Image, ImageBackground, ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import colors from '../config/colors'
 import CalculaterOutput from './CalculaterOutput'
@@ -59,7 +59,7 @@ const Hero = () => {
       setCurrDestination(currDestination)
    }
 
-   if (!currencies) return <ActivityIndicator size="large" />
+   if (!currencies) return <Image style={{ width: 100, height: 100 }} source={require('../assets/loader.gif')} />
    return (
       <View style={styles.heroMain}>
          <View style={styles.calcContainer}>

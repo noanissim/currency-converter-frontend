@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
+
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+
 import { getCurrencyByCode } from '../store/actions/currencyActions'
 
 const Calculater = props => {
@@ -12,10 +14,10 @@ const Calculater = props => {
    const [coin, setCoin] = useState('₪')
 
    useEffect(() => {
+      //only for the first render
       if (!amount) setAmount('100')
       if (selectedCountry === 'ils') props.changeCurrency(selectedCountry)
-      return () => {}
-   }, [coin])
+   }, [])
 
    const onChangemountInput = ev => {
       setAmount(ev)
@@ -26,7 +28,7 @@ const Calculater = props => {
       setSelectedCountry(itemValue)
       props.changeCurrency(itemValue)
       let country = await dispatch(getCurrencyByCode(itemValue))
-      setCoin(await country.coin)
+      setCoin(country.coin)
    }
 
    return (
@@ -36,7 +38,7 @@ const Calculater = props => {
          </View>
          <View style={styles.calcRowInput}>
             <View style={styles.amountInputContainer}>
-               <TextInput value={amount} onChangeText={onChangemountInput} nChange style={styles.amountInput} keyboardType="numeric"></TextInput>
+               <TextInput value={amount} onChangeText={onChangemountInput} style={styles.amountInput} keyboardType="numeric"></TextInput>
                <Text style={styles.coinSymbol}>{coin}</Text>
             </View>
             <View style={styles.currencyInput}>

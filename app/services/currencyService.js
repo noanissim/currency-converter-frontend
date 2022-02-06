@@ -10,11 +10,8 @@ export const currencyService = {
    getDestFlags
 }
 
-var gCurrencies
-
 async function getCurrencies(filterBy = '') {
-   gCurrencies = await httpService.get(`country`)
-   return gCurrencies
+   return await httpService.get(`country`)
 }
 
 async function getCurrencyById(id) {
@@ -37,19 +34,20 @@ async function saveCurrency(country) {
    return country._id ? await _updateCurrency(country) : await _addCurrency(country)
 }
 
-async function getConvertedValues(country, destination, inputValue) {
-   try {
-      return destination.value * parseInt(inputValue)
-   } catch (err) {
-      console.log(err)
-   }
+function getConvertedValues(destination, inputValue) {
+   return destination.value * parseInt(inputValue)
 }
 
 async function getCurrencyByCode(code) {
-   let country = gCurrencies.find(country => country.code.toLowerCase() === code)
-   if (country) {
-      let ans = await getCurrencyById(country._id)
-      return ans
+   try {
+      let currencies = await getCurrencies()
+      let country = currencies.find(country => country.code.toLowerCase() === code)
+      if (country) {
+         let ans = await getCurrencyById(country._id)
+         return ans
+      }
+   } catch (err) {
+      console.log(err)
    }
 }
 

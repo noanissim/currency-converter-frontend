@@ -1,10 +1,12 @@
-import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import colors from '../config/colors'
-import CalculaterOutput from './CalculaterOutput'
-import CalculaterInput from './CalculaterInput'
-import { loadCurrencies, getCurrencyByCode, getConvertedValues } from '../store/actions/currencyActions'
 import { useSelector, useDispatch } from 'react-redux'
+
+import colors from '../config/colors'
+import { loadCurrencies, getCurrencyByCode, getConvertedValues } from '../store/actions/currencyActions'
+
+import CalculaterInput from './CalculaterInput'
+import CalculaterOutput from './CalculaterOutput'
 
 const Hero = () => {
    const dispatch = useDispatch()
@@ -16,6 +18,7 @@ const Hero = () => {
    const [convertedOutput, setConvertedOutput] = useState(null)
 
    useEffect(() => {
+      //Before the user enters amount, the currency trade is already exist
       dispatch(loadCurrencies())
       setTimeout(() => {
          if (!currCountry && !currDestination && !inputValue) {
@@ -24,22 +27,21 @@ const Hero = () => {
             setInputValue('100')
          }
       }, 0)
-      return () => {}
    }, [currCountry, currDestination, currDestination?.coin, inputValue, convertedOutput])
 
    const onChangeAmount = async amount => {
       setInputValue(amount)
-      if (currCountry && currDestination && amount) await calcConverted(currCountry, currDestination, amount)
+      if (currCountry && currDestination && amount) calcConverted(currCountry, currDestination, amount)
    }
 
    const onChangeCurrency = async currency => {
       try {
-         let country = dispatch(getCurrencyByCode(currency))
-         country = await country
+         let country = await dispatch(getCurrencyByCode(currency))
          setCurrCountry(country)
          let destination = country.currencies.find(dest => dest.to.toLowerCase() === currDestination.to.toLowerCase())
          setCurrDestination(destination)
-         if (country && destination && inputValue) await calcConverted(country, destination, inputValue)
+         //the destination with the source country value trade
+         if (country && destination && inputValue) calcConverted(country, destination, inputValue)
       } catch (err) {
          console.log(err)
       }
@@ -48,13 +50,13 @@ const Hero = () => {
    const onChangeDestination = async destinationCode => {
       if (currCountry && currCountry.currencies?.length) {
          let destination = currCountry.currencies.find(dest => dest.to.toLowerCase() === destinationCode)
-         await setCurrDestination(destination)
-         if (currCountry && destination && inputValue) await calcConverted(currCountry, destination, inputValue)
+         setCurrDestination(destination)
+         if (currCountry && destination && inputValue) calcConverted(currCountry, destination, inputValue)
       }
    }
 
-   const calcConverted = async (currCountry, currDestination, inputValue) => {
-      let convertedMoney = await getConvertedValues(currCountry, currDestination, inputValue)
+   const calcConverted = (currCountry, currDestination, inputValue) => {
+      let convertedMoney = getConvertedValues(currDestination, inputValue)
       setConvertedOutput(convertedMoney)
       setCurrDestination(currDestination)
    }

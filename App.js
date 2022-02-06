@@ -1,6 +1,6 @@
 import AppHeader from './app/components/AppHeader'
 import Homepage from './app/screens/Homepage'
-import { ImageBackground, StyleSheet, Text, View, StatusBar, ScrollView } from 'react-native'
+import { ImageBackground, StyleSheet } from 'react-native'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { store } from './app/store/index'

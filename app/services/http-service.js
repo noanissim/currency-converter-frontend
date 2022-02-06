@@ -30,7 +30,7 @@ async function ajax(endpoint, method = 'GET', data = null) {
       console.log(`Had Issues ${method}ing to the backend, endpoint: ${endpoint}, with data: ${data}`)
       console.dir(err)
       if (err.response && err.response.status === 401) {
-         window.location.assign('/')
+         window.location.assign('/') //not good, beacause window.location is connected to the view-violates the seppration of concerns
       }
       throw err
    }

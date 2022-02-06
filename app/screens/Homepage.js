@@ -1,6 +1,5 @@
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import React from 'react'
-import colors from '../config/colors'
 import Hero from '../components/Hero'
 import Features from '../components/Features'
 
@@ -22,7 +21,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'flex-start',
-      marginVertical: 10
+      marginVertical: 20
    },
    scrollView: {
       flex: 1,

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
+
 import React, { useEffect, useState } from 'react'
 
 const CalculaterOutput = props => {
@@ -7,14 +8,15 @@ const CalculaterOutput = props => {
    const [coin, setCoin] = useState(null)
 
    useEffect(() => {
+      //only for the first render
       if (!selectedCountry) props.changeDestination('php')
       if (!coin) setCoin('₱')
 
       if (selectedCountry && props.currDestination) {
+         //props.currDestination includes the full information about the dest str
          props.changeDestination(selectedCountry)
          setCoin(props.currDestination.coin)
       }
-      return () => {}
    }, [coin, props.currDestination, props.convertedOutput])
 
    const handleCountryChange = async (itemValue, itemIndex) => {

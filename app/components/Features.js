@@ -1,6 +1,5 @@
 import { StyleSheet, Text, Dimensions, View, SafeAreaView, AppRegistry, StatusBar, FlatList, Image } from 'react-native'
 import React, { useRef, useState } from 'react'
-import colors from '../config/colors'
 
 import * as Svg from 'react-native-svg'
 const { Circle, Rect } = Svg
@@ -9,11 +8,11 @@ import { SvgCssUri } from 'react-native-svg'
 const { width } = Dimensions.get('window')
 
 const SPACING = 5
-const ITEM_LENGTH = width * 0.5 // Item is a square. Therefore, its height and width are of the same length.
+const ITEM_LENGTH = width * 0.5
 const BORDER_RADIUS = 10
 
 const Features = () => {
-   const flatListRef = useRef()
+   const flatListRef = useRef() //prepare for autoscroll
    const [images, setimages] = useState([
       { id: 0, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/BetterRate-1.svg` },
       { id: 1, src: `https://www.rewire.co.il/wp-content/uploads/2019/10/Fatest-mob-1.svg` },
@@ -28,6 +27,10 @@ const Features = () => {
          <View style={{ flex: 1 }}>
             <FlatList
                data={images}
+               ref={flatListRef}
+               horizontal
+               showsHorizontalScrollIndicator={false}
+               keyExtractor={item => item.id}
                renderItem={({ item, index }) => {
                   return (
                      <View style={{ width: ITEM_LENGTH }}>
@@ -37,10 +40,6 @@ const Features = () => {
                      </View>
                   )
                }}
-               ref={flatListRef}
-               horizontal
-               showsHorizontalScrollIndicator={false}
-               keyExtractor={item => item.id}
             />
          </View>
       </SafeAreaView>

@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between'
    },
    logoSection: {
-      // height: 100,
-      // width: 250,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-start'

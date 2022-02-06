@@ -41,8 +41,8 @@ export function getCurrencyByCode(currencyCode) {
    }
 }
 
-export async function getConvertedValues(country, destination, inputValue) {
-   return await currencyService.getConvertedValues(country, destination, inputValue)
+export function getConvertedValues(destination, inputValue) {
+   return currencyService.getConvertedValues(destination, inputValue)
 }
 
 export function getDestFlags() {

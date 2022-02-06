@@ -22,5 +22,5 @@ I expect to get a cheap and accurate rate (as much as possible).
 
 
 
-<img src="https://res.cloudinary.com/daymipr66/image/upload/v1644163120/converterGithub1_i1cszt.png" width="800">
-<img src="https://res.cloudinary.com/daymipr66/image/upload/v1644163188/converterGithub2_oxnphw.png" width="800">
+<img src="https://res.cloudinary.com/daymipr66/image/upload/v1644163120/converterGithub1_i1cszt.png" width="500">
+<img src="https://res.cloudinary.com/daymipr66/image/upload/v1644163188/converterGithub2_oxnphw.png" width="500">
